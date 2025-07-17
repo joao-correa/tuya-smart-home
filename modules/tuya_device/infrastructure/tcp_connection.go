@@ -29,9 +29,6 @@ func (d *deviceConnection) SendMessageWithResponse(cmd *externals.MessageWithRes
 	bytes := make([]byte, 4024)
 	_, err = conn.Read(bytes)
 
-	// encryptMessageUsecase := NewEncryptMessageUsecase()
-	// bytes, err = encryptMessageUsecase.Decrypt(bytes, cmd.Key)
-
 	if err != nil {
 		return "", err
 	}
