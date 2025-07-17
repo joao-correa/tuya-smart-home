@@ -1,0 +1,27 @@
+{
+  "scenes": {
+    "turn-on": {
+      "id": "1",
+      "name": "turn-on",
+      "dps": { "switch": true },
+      "deviceIds": []
+    },
+    "turn-off": {
+      "id": "2",
+      "name": "turn-off",
+      "dps": { "switch": false },
+      "deviceIds": []
+    },
+    "full-cold": {
+      "id": "3",
+      "name": "full-cold-light",
+      "dps": {
+        "switch": true,
+        "mode": "white",
+        "brightness": 1000,
+        "colourtemp": 1000
+      },
+      "deviceIds": []
+    }
+  }
+}
