@@ -45,3 +45,6 @@ var NO_PROTOCOL_HEADER_CMDS = map[int]bool{
 
 const PREFIX_55AA_VALUE = 0x000055AA
 const SUFFIX_55AA_VALUE = 0x0000AA55
+
+var PREFIX_BIN = []byte{0x00, 0x00, 0x55, 0xaa}
+var SUFFIX_BIN = []byte{0x00, 0x00, 0xaa, 0x55}

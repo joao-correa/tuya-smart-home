@@ -25,16 +25,23 @@ type buildMessageUsecase struct {
 }
 
 func (b *buildMessageUsecase) BuildMessage(message *api.Message) ([]byte, error) {
-	payloadEncoded, err := json.Marshal(b.translateMessage(&message.Payload))
+	var payloadEncoded []byte
+	var encryptedPayload []byte
+	var err error
 
-	if err != nil {
-		return nil, err
-	}
-	payloadEncoded = []byte(strings.ReplaceAll(string(payloadEncoded), " ", ""))
+	if message.Payload != nil {
+		payloadEncoded, err = json.Marshal(b.translateMessage(message.Payload))
 
-	encryptedPayload, err := b.encryptMessage.Encrypt(payloadEncoded, message.Key)
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+
+		payloadEncoded = []byte(strings.ReplaceAll(string(payloadEncoded), " ", ""))
+
+		encryptedPayload, err = b.encryptMessage.Encrypt(payloadEncoded, message.Key)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if !constants.NO_PROTOCOL_HEADER_CMDS[message.Cmd] {
@@ -67,6 +74,7 @@ func (b *buildMessageUsecase) BuildMessage(message *api.Message) ([]byte, error)
 }
 
 func (b *buildMessageUsecase) translateMessage(message *api.MessagePayload) translatedMessagePayload {
+
 	dpsTranlation := map[string]string{
 		"Switch":     "20",
 		"Mode":       "21",

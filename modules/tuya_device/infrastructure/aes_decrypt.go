@@ -14,8 +14,6 @@ func (e *decryptMessage) Decrypt(message []byte, key string) ([]byte, error) {
 		return nil, err
 	}
 
-	message = e.fixPadding(message, aes.BlockSize)
-
 	decrypted := make([]byte, len(message))
 
 	// Decrypt each 16-byte block
@@ -24,15 +22,6 @@ func (e *decryptMessage) Decrypt(message []byte, key string) ([]byte, error) {
 	}
 
 	return decrypted, nil
-}
-
-func (e *decryptMessage) fixPadding(data []byte, blockSize int) []byte {
-	padding := blockSize - len(data)%blockSize
-	padText := make([]byte, padding)
-	for i := range padText {
-		padText[i] = byte(padding)
-	}
-	return append(data, padText...)
 }
 
 var _ externals.DecryptMessage = (*decryptMessage)(nil)

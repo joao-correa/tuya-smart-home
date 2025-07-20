@@ -30,4 +30,3 @@ func LoadApis() (*Api, func(), error) {
 
 	return &Api{}, nil, nil
 }
-

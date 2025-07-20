@@ -9,4 +9,5 @@ import (
 var AllUsecases = wire.NewSet(
 	NewBuildMessageUsecase, wire.Bind(new(api.BuildMessageUsecase), new(*buildMessageUsecase)),
 	NewApplySceneUsecase, wire.Bind(new(api.ApplySceneUsecase), new(*applySceneUsecase)),
+	NewGetDevicesStatus, wire.Bind(new(api.GetDevicesStatusUsecase), new(*getDevicesStatus)),
 )

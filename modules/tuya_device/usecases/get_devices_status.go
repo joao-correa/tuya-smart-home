@@ -1,50 +1,28 @@
 package usecases
 
 import (
-	"fmt"
-
 	"smart-home/modules/tuya_device/api"
 	"smart-home/modules/tuya_device/constants"
 	"smart-home/modules/tuya_device/externals"
 )
 
-type applySceneUsecase struct {
-	scenesRepo          externals.ScenesRepo
+type getDevicesStatus struct {
 	devicesRepo         externals.DevicesRepo
 	deviceConnection    externals.DeviceConnection
 	buildMessageUsecase api.BuildMessageUsecase
+	decryptMessage      externals.DecryptMessage
 }
 
-func (a *applySceneUsecase) ApplyScene(sceneName string) error {
-	scenes, err := a.scenesRepo.LoadScenes()
-
-	if err != nil {
-		return err
-	}
-
-	scene, ok := scenes.Scenes[sceneName]
-	if !ok {
-		return fmt.Errorf("scene not found")
-	}
-
-	devicesOnScene := map[string]bool{}
-	for _, deviceID := range scene.DeviceIds {
-		devicesOnScene[deviceID] = true
-	}
-
+func (a *getDevicesStatus) GetDevicesStatus() ([]byte, error) {
 	devices, err := a.devicesRepo.LoadDevices()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, device := range devices.Devices {
-		if _, ok := devicesOnScene[device.ID]; !ok {
-			continue
-		}
-
 		message := api.Message{
-			Cmd:      constants.COMMAND_TYPE_CONTROL,
+			Cmd:      constants.COMMAND_TYPE_DP_QUERY,
 			Version:  "3.3",
 			Key:      device.Key,
 			DeviceId: device.ID,
@@ -52,17 +30,16 @@ func (a *applySceneUsecase) ApplyScene(sceneName string) error {
 				DevId: device.ID,
 				Uid:   device.ID,
 				GwId:  device.ID,
-				Dps:   scene.Dps,
 			},
 		}
 
 		messageBytes, err := a.buildMessageUsecase.BuildMessage(&message)
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		err = a.deviceConnection.SendMessageWithoutResponse(&externals.MessageWithoutResponse{
+		responseBytes, err := a.deviceConnection.SendMessageWithResponse(&externals.MessageWithResponse{
 			IpAddress: device.IP,
 			Port:      "6668",
 			Key:       device.Key,
@@ -70,25 +47,41 @@ func (a *applySceneUsecase) ApplyScene(sceneName string) error {
 		})
 
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		print("\n len response ", len(responseBytes))
+		decodedBytes, err := a.decryptMessage.Decrypt(responseBytes, device.Key)
+		if err != nil {
+			return nil, err
+		}
+
+		print("\n len decoded ", len(decodedBytes))
+
+		// TODO: translate from dps numbers to dps names
+		// TODO: append to devices list
+		// TODO: return list
+
+		print("\n decode message ")
+		print(string(decodedBytes))
+		print("\n\n")
 	}
 
-	return nil
+	return nil, nil
 }
 
-var _ api.ApplySceneUsecase = (*applySceneUsecase)(nil)
+var _ api.GetDevicesStatusUsecase = (*getDevicesStatus)(nil)
 
-func NewApplySceneUsecase(
-	scenesRepo externals.ScenesRepo,
+func NewGetDevicesStatus(
 	devicesRepo externals.DevicesRepo,
 	deviceConnection externals.DeviceConnection,
 	buildMessageUsecase api.BuildMessageUsecase,
-) *applySceneUsecase {
-	return &applySceneUsecase{
-		scenesRepo:          scenesRepo,
+	decryptMessage externals.DecryptMessage,
+) *getDevicesStatus {
+	return &getDevicesStatus{
 		devicesRepo:         devicesRepo,
 		deviceConnection:    deviceConnection,
 		buildMessageUsecase: buildMessageUsecase,
+		decryptMessage:      decryptMessage,
 	}
 }

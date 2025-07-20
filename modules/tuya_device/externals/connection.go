@@ -15,6 +15,6 @@ type MessageWithoutResponse struct {
 }
 
 type DeviceConnection interface {
-	SendMessageWithResponse(cmd *MessageWithResponse) (string, error)
+	SendMessageWithResponse(cmd *MessageWithResponse) ([]byte, error)
 	SendMessageWithoutResponse(cmd *MessageWithoutResponse) error
 }

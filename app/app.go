@@ -21,6 +21,16 @@ func BindApiRoutes(e *echo.Echo) {
 		return c.JSON(http.StatusOK, "ok")
 	})
 
+	e.POST("/api/get-device-status", func(c echo.Context) error {
+		bytes, err := api.tuyaDeviceApi.GetDevicesStatus()
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, string(bytes))
+	})
+
 	e.POST("/api/test", func(c echo.Context) error {
 		test(api)
 		return c.JSON(200, "ok")

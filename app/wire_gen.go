@@ -21,7 +21,9 @@ func LoadApis() (*Api, func(), error) {
 	encryptMessage := infrastructure.NewEncryptMessage()
 	buildMessageUsecase := usecases.NewBuildMessageUsecase(encryptMessage)
 	applySceneUsecase := usecases.NewApplySceneUsecase(scenesRepo, devicesRepo, deviceConnection, buildMessageUsecase)
-	tuyaDeviceApi := api.NewTuyaDeviceApi(applySceneUsecase, buildMessageUsecase)
+	decryptMessage := infrastructure.NewDecryptMessage()
+	getDevicesStatus := usecases.NewGetDevicesStatus(devicesRepo, deviceConnection, buildMessageUsecase, decryptMessage)
+	tuyaDeviceApi := api.NewTuyaDeviceApi(applySceneUsecase, buildMessageUsecase, getDevicesStatus)
 	appApi, err := loadApis(tuyaDeviceApi)
 	if err != nil {
 		return nil, nil, err
