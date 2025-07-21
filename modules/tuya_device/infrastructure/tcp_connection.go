@@ -91,12 +91,6 @@ func (d *deviceConnection) SendMessageWithoutResponse(cmd *externals.MessageWith
 	}
 
 	_, err = conn.Write(cmd.Message)
-	if err != nil {
-		return err
-	}
-
-	bytes := make([]byte, 4)
-	_, err = conn.Read(bytes)
 
 	return err
 }
