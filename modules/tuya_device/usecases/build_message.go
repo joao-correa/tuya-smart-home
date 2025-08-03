@@ -100,7 +100,7 @@ func (b *buildMessageUsecase) translateMessage(message *api.MessagePayload) tran
 	v := reflect.ValueOf(message.Dps)
 	tp := v.Type()
 
-	for i := 0; i < v.NumField(); i++ {
+	for i := range v.NumField() {
 		field := v.Field(i)
 		fieldType := tp.Field(i)
 
