@@ -50,21 +50,15 @@ func (a *getDevicesStatus) GetDevicesStatus() ([]byte, error) {
 			return nil, err
 		}
 
-		print("\n len response ", len(responseBytes))
 		decodedBytes, err := a.decryptMessage.Decrypt(responseBytes, device.Key)
 		if err != nil {
 			return nil, err
 		}
 
-		print("\n len decoded ", len(decodedBytes))
-
 		// TODO: translate from dps numbers to dps names
 		// TODO: append to devices list
 		// TODO: return list
-
-		print("\n decode message ")
 		print(string(decodedBytes))
-		print("\n\n")
 	}
 
 	return nil, nil
