@@ -49,12 +49,6 @@ Replace `turn-on` with any scene name defined in your `scenes.json` file.
 
 - `POST /api/apply-scene?scene={scene-name}` - Apply a predefined scene
 
-## Project Goals
-
-This project was designed to provide:
-- Simple, lightweight device control
-- Local network operation (no cloud dependencies)
-- Easy integration with Apple Shortcuts
-- Minimal resource footprint
-
-Perfect for basic home automation scenarios where you need reliable local control of LED strips and other Tuya-compatible smart devices.
+## Goal 
+I built this aiming to have simple and lightweight server able to control some led devices
+over my LAN using apple shortcuts
