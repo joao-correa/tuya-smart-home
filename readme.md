@@ -1,6 +1,9 @@
-# Smart Home Controller
+# Smart Home Server API
 
 A lightweight HTTP server for controlling Tuya smart devices (protocol version 3.3) over your local network.
+
+> Some Taschibra devices are under the hood tuya devices 
+
 
 ## Prerequisites
 
